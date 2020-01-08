@@ -11,6 +11,6 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-s -w"
 
 
-FROM scratch
+FROM gcr.io/distroless/static
 COPY --from=builder /go/src/github.com/smpio/kube-networkpolicy-ensurer/kube-networkpolicy-ensurer /
 ENTRYPOINT ["/kube-networkpolicy-ensurer"]
