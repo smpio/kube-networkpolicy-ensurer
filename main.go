@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"math/rand"
@@ -62,7 +63,7 @@ func nsWatcher(clientset *kubernetes.Clientset, c chan *v1.Namespace) {
 }
 
 func internalNsWatcher(clientset *kubernetes.Clientset, c chan *v1.Namespace) error {
-	list, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+	list, err := clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return err
 	}
@@ -73,7 +74,7 @@ func internalNsWatcher(clientset *kubernetes.Clientset, c chan *v1.Namespace) er
 		log.Println("nsWatcher: watching since", resourceVersion)
 
 		timeoutSeconds := int64(minWatchTimeout.Seconds() * (rand.Float64() + 1.0))
-		watcher, err := clientset.CoreV1().Namespaces().Watch(metav1.ListOptions{
+		watcher, err := clientset.CoreV1().Namespaces().Watch(context.TODO(), metav1.ListOptions{
 			ResourceVersion: resourceVersion,
 			TimeoutSeconds:  &timeoutSeconds,
 		})
@@ -128,6 +129,6 @@ func handleNs(clientset *kubernetes.Clientset, ns *v1.Namespace) error {
 	}
 
 	c := clientset.NetworkingV1().NetworkPolicies(ns.Name)
-	_, err := c.Create(policy)
+	_, err := c.Create(context.TODO(), policy, metav1.CreateOptions{})
 	return err
 }
