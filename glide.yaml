@@ -1,4 +1,0 @@
-package: github.com/smpio/kube-networkpolicy-ensurer
-import:
-- package: k8s.io/client-go
-  version: ^12.0.0
